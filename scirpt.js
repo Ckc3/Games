@@ -1,13 +1,13 @@
 
 const PROXY_BUILDERS = [
 
-    u => `https://your-proxy-1.example.com/proxy?url=${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`,
 
 
-    u => `https://your-proxy-2.example.com/browse/${encodeURIComponent(u)}`,
+    u => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`,
 
 
-    u => `https://your-proxy-3.example.com/service?u=${encodeURIComponent(u)}`
+    u => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`
 ];
 
 
@@ -777,3 +777,4 @@ document.getElementById('reddit-search-input').addEventListener('keypress', func
         searchReddit();
     }
 });
+
