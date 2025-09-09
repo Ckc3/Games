@@ -1,4 +1,39 @@
 
+const PROXY_BUILDERS = [
+
+    u => `https://your-proxy-1.example.com/proxy?url=${encodeURIComponent(u)}`,
+
+
+    u => `https://your-proxy-2.example.com/browse/${encodeURIComponent(u)}`,
+
+
+    u => `https://your-proxy-3.example.com/service?u=${encodeURIComponent(u)}`
+];
+
+
+function normalizeUrl(url) {
+    return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+
+function applyProxyIfEnabled(url) {
+    const normalized = normalizeUrl(url);
+    const autoProxy = document.getElementById('autoProxy')?.checked;
+
+    if (!autoProxy || !Array.isArray(PROXY_BUILDERS) || PROXY_BUILDERS.length === 0) {
+        return normalized;
+    }
+
+    const builder = PROXY_BUILDERS[Math.floor(Math.random() * PROXY_BUILDERS.length)];
+    try {
+        return builder(normalized);
+    } catch {
+
+        return normalized;
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const navBtns = document.querySelectorAll('.nav-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -50,7 +85,8 @@ function playGame(title, url) {
     const gameFrame = document.getElementById('gameFrame');
     
     gameTitle.textContent = title;
-    gameFrame.src = url;
+
+    gameFrame.src = applyProxyIfEnabled(url);
     modal.classList.add('active');
     
 
@@ -106,21 +142,23 @@ function setupSearch(searchId, tabId) {
 
 
 function openApp(url) {
+    const finalUrl = applyProxyIfEnabled(url);
     const openMode = getOpenMode();
     if (openMode === 'newTab') {
-        window.open(url, '_blank');
+        window.open(finalUrl, '_blank');
     } else {
-        window.location.href = url;
+        window.location.href = finalUrl;
     }
 }
 
 
 function openUnblocker(url) {
+    const finalUrl = applyProxyIfEnabled(url);
     const openMode = getOpenMode();
     if (openMode === 'newTab') {
-        window.open(url, '_blank');
+        window.open(finalUrl, '_blank');
     } else {
-        window.location.href = url;
+        window.location.href = finalUrl;
     }
 }
 
@@ -135,13 +173,10 @@ function unblockSite() {
     }
     
 
-    let fullUrl = url;
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        fullUrl = 'https://' + url;
-    }
+    const fullUrl = normalizeUrl(url);
     
 
-    const proxyUrl = `https://cors-anywhere.herokuapp.com/${fullUrl}`;
+    const proxyUrl = applyProxyIfEnabled(fullUrl);
     
     const openMode = getOpenMode();
     if (openMode === 'newTab') {
