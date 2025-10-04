@@ -8,55 +8,89 @@
 </head>
 <body>
     <div id="particles"></div>
+
     <header>
         <h1>Unblock</h1>
         <input type="text" id="search" placeholder="Search games...">
     </header>
+
     <nav>
         <button class="tab active" data-tab="games">Games</button>
     </nav>
+
+
+    <p id="game-count" style="text-align:center; margin-top:10px; opacity:0.8; color:#ccc;"></p>
+
     <main id="content">
-        <div class="game-card">
-            <img src="https://upload.wikimedia.org/wikipedia/en/b/b6/Minecraft_2024_cover_art.png" alt="Minecraft">
-            <h2>Minecraft</h2>
-            <button class="play-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/minecraft/index.html">Play</button>
-            <button class="fullscreen-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/minecraft/index.html">Fullscreen</button>
-        </div>
-        <div class="game-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc8QIQXx629NlNmCpAzqmr8ueJPENLyJnjcQ&s" alt="Clash Royale">
-            <h2>Clash Royale</h2>
-            <button class="play-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/clash_royale/index.html">Play</button>
-            <button class="fullscreen-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/clash_royale/index.html">Fullscreen</button>
-        </div>
-        <div class="game-card">
-            <img src="https://uploads.golmedia.net/uploads/articles/article_media/1380712591728300172gol1.jpg" alt="COD Zombies Portable">
-            <h2>COD Zombies Portable</h2>
-            <button class="play-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/cod_zombies_portable/index.html">Play</button>
-            <button class="fullscreen-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/cod_zombies_portable/index.html">Fullscreen</button>
-        </div>
-        <div class="game-card">
-            <img src="https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E" alt="Block blast">
-            <h2>Block blast</h2>
-            <button class="play-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/blocky_puzzle/index.html">Play</button>
-            <button class="fullscreen-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/blocky_puzzle/index.html">Fullscreen</button>
-        </div>
-        <div class="game-card">
-            <img src="https://unblocked-games.s3.amazonaws.com/media/posts/582/nova-craft-512.webp" alt="Nova Craft">
-            <h2>Nova Craft</h2>
-            <button class="play-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/nova_craft/index.html">Play</button>
-            <button class="fullscreen-btn" data-link="https://maddox05.github.io/basic-ruffle-player/html/nova_craft/index.html">Fullscreen</button>
-        </div>
-        <div class="game-card">
-            <img src="https://images.ctfassets.net/vfkpgemp7ek3/4003728330/cb4e4ce72715be195bcbcb9c485256fb/tiktok-one-billion.png" alt="tiktok">
-            <h2>tiktok</h2>
-            <button class="play-btn" data-link="https://vcsaptember.installgentoo.com/a/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2F">Play</button>
-            <button class="fullscreen-btn" data-link="https://vcsaptember.installgentoo.com/a/hvtrs8%2F-wuw%2Ctkkvoi.aoo%2F">Fullscreen</button>
-        </div>
+
     </main>
+
     <div id="game-container" class="hidden">
         <button id="close-game">Close</button>
         <iframe id="game-iframe" src="" allowfullscreen></iframe>
     </div>
-    <script src="scirpt.js"></script>
+
+
+    <script src="games.js"></script>
+
+    <script>
+        const content = document.getElementById("content");
+        const searchInput = document.getElementById("search");
+        const counter = document.getElementById("game-count");
+
+
+        function displayGames(list) {
+            content.innerHTML = "";
+
+            list.forEach(game => {
+                const card = document.createElement("div");
+                card.classList.add("game-card");
+                card.innerHTML = `
+                    <img src="${game.gameroot}" alt="${game.name}">
+                    <h2>${game.name}</h2>
+                    <button class="play-btn" data-link="${game.linksrc}">Play</button>
+                    <button class="fullscreen-btn" data-link="${game.linksrc}">Fullscreen</button>
+                `;
+                content.appendChild(card);
+            });
+
+
+            counter.textContent = ` 1,680 Game Available`;
+        }
+
+
+        if (typeof games !== "undefined") {
+            displayGames(games);
+        } else {
+            console.error("⚠️ games.js failed to load or 'games' variable not found.");
+        }
+
+
+        searchInput.addEventListener("input", e => {
+            const term = e.target.value.toLowerCase();
+            const filtered = games.filter(g => g.name.toLowerCase().includes(term));
+            displayGames(filtered);
+        });
+
+
+        document.addEventListener("click", e => {
+            const container = document.getElementById("game-container");
+            const iframe = document.getElementById("game-iframe");
+
+            if (e.target.classList.contains("play-btn") || e.target.classList.contains("fullscreen-btn")) {
+                const link = e.target.getAttribute("data-link");
+                iframe.src = link;
+                container.classList.remove("hidden");
+            }
+
+            if (e.target.id === "close-game") {
+                iframe.src = "";
+                container.classList.add("hidden");
+            }
+        });
+    </script>
+
+
+<script src="scirpt.js"></script>
 </body>
 </html>
